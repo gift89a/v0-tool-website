@@ -242,11 +242,11 @@ export function TopNav() {
   const pathname = usePathname()
   const [openDropdown, setOpenDropdown] = useState<string | null>(null)
 
-  const toggleDropdown = (categoryId: string) => {
-    setOpenDropdown(openDropdown === categoryId ? null : categoryId)
+  const handleMouseEnter = (categoryId: string) => {
+    setOpenDropdown(categoryId)
   }
 
-  const closeDropdown = () => {
+  const handleMouseLeave = () => {
     setOpenDropdown(null)
   }
 
@@ -270,9 +270,13 @@ export function TopNav() {
               const hasActiveTool = category.tools.some(tool => pathname === tool.href)
 
               return (
-                <div key={category.id} className="relative">
+                <div 
+                  key={category.id} 
+                  className="relative"
+                  onMouseEnter={() => handleMouseEnter(category.id)}
+                  onMouseLeave={handleMouseLeave}
+                >
                   <button
-                    onClick={() => toggleDropdown(category.id)}
                     className={cn(
                       "flex items-center gap-2 px-4 py-2 text-sm font-mono rounded-md transition-colors",
                       "hover:bg-primary/10 hover:text-primary",
@@ -284,39 +288,29 @@ export function TopNav() {
                   </button>
 
                   {isOpen && (
-                    <>
-                      {/* Backdrop */}
-                      <div 
-                        className="fixed inset-0 z-10" 
-                        onClick={closeDropdown}
-                      />
-                      
-                      {/* Dropdown */}
-                      <div className="absolute top-full left-0 mt-1 w-64 bg-background border border-border rounded-md shadow-lg z-20">
-                        <div className="p-2">
-                          {category.tools.map((tool) => {
-                            const Icon = tool.icon
-                            const isActive = pathname === tool.href
+                    <div className="absolute top-full left-0 mt-1 w-64 bg-background border border-border rounded-md shadow-lg z-20">
+                      <div className="p-2">
+                        {category.tools.map((tool) => {
+                          const Icon = tool.icon
+                          const isActive = pathname === tool.href
 
-                            return (
-                              <Link
-                                key={tool.id}
-                                href={tool.href}
-                                onClick={closeDropdown}
-                                className={cn(
-                                  "flex items-center gap-3 px-3 py-2.5 rounded-md font-mono text-sm transition-all w-full",
-                                  "hover:bg-primary/10",
-                                  isActive && "bg-primary/20 text-primary font-semibold",
-                                )}
-                              >
-                                <Icon className="w-4 h-4 flex-shrink-0" />
-                                <span className="truncate">{tool.title}</span>
-                              </Link>
-                            )
-                          })}
-                        </div>
+                          return (
+                            <Link
+                              key={tool.id}
+                              href={tool.href}
+                              className={cn(
+                                "flex items-center gap-3 px-3 py-2.5 rounded-md font-mono text-sm transition-all w-full",
+                                "hover:bg-primary/10",
+                                isActive && "bg-primary/20 text-primary font-semibold",
+                              )}
+                            >
+                              <Icon className="w-4 h-4 flex-shrink-0" />
+                              <span className="truncate">{tool.title}</span>
+                            </Link>
+                          )
+                        })}
                       </div>
-                    </>
+                    </div>
                   )}
                 </div>
               )
