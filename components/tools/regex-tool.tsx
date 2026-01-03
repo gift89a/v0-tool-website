@@ -330,7 +330,7 @@ export function RegexTool() {
               >
                 <div className="w-full min-w-0">
                   <div className="font-medium text-xs mb-1 font-mono">{item.name}</div>
-                  <div className="text-xs text-muted-foreground font-mono break-words leading-tight">{item.pattern}</div>
+                  <div className="text-xs text-muted-foreground font-mono truncate" title={item.pattern}>{item.pattern}</div>
                 </div>
               </Button>
             ))}
