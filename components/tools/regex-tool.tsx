@@ -171,7 +171,7 @@ export function RegexTool() {
             <CardDescription>点击快速使用常用模式</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-2 gap-2">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
               {commonPatterns.map((item) => (
                 <Button
                   key={item.name}
@@ -180,9 +180,9 @@ export function RegexTool() {
                   onClick={() => setPattern(item.pattern)}
                   className="justify-start text-left h-auto p-3"
                 >
-                  <div>
+                  <div className="w-full">
                     <div className="font-medium">{item.name}</div>
-                    <div className="text-xs text-muted-foreground font-mono truncate">{item.pattern}</div>
+                    <div className="text-xs text-muted-foreground font-mono break-all leading-tight">{item.pattern}</div>
                   </div>
                 </Button>
               ))}
