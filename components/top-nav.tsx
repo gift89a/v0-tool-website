@@ -29,6 +29,9 @@ import {
   BarChart3,
   List,
   FileSpreadsheet,
+  Code,
+  GitBranch,
+  Globe,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useState } from "react"
@@ -175,6 +178,24 @@ const toolCategories = [
         title: "随机数生成",
         icon: Dices,
         href: "/tools/random-number",
+      },
+    ],
+  },
+  {
+    id: "dev",
+    title: "开发者工具",
+    tools: [
+      {
+        id: "regex",
+        title: "正则表达式测试",
+        icon: Code,
+        href: "/tools/regex",
+      },
+      {
+        id: "url-parser",
+        title: "URL 解析器",
+        icon: Globe,
+        href: "/tools/url-parser",
       },
     ],
   },
