@@ -73,7 +73,7 @@ export function RegexTool() {
   const commonPatterns = [
     { name: "邮箱", pattern: "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$" },
     { name: "手机号", pattern: "^1[3-9]\\d{9}$" },
-    { name: "URL", pattern: "https?:\\/\\/(www\\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b([-a-zA-Z0-9()@:%_\\+.~#?&//=]*)" },
+    { name: "用户名", pattern: "^[a-zA-Z0-9_]{3,16}$" },
     { name: "IP地址", pattern: "\\b(?:[0-9]{1,3}\\.){3}[0-9]{1,3}\\b" },
     { name: "中文", pattern: "[\\u4e00-\\u9fa5]+" },
     { name: "数字", pattern: "\\d+" },
@@ -114,7 +114,13 @@ export function RegexTool() {
                       onChange={(e) => setPattern(e.target.value)}
                       placeholder="例如: \\d+ 或 [a-zA-Z]+"
                       className="font-mono pr-12 text-sm"
-                      style={{ resize: 'none' }}
+                      style={{ 
+                        resize: 'none',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        whiteSpace: 'nowrap'
+                      }}
+                      title={pattern || "输入正则表达式"}
                     />
                     {pattern && (
                       <div className="absolute right-2 top-1/2 transform -translate-y-1/2 text-xs text-muted-foreground font-mono">
@@ -232,7 +238,13 @@ export function RegexTool() {
                       onChange={(e) => setPattern(e.target.value)}
                       placeholder="例如: \\d+ 或 [a-zA-Z]+"
                       className="font-mono pr-12 text-sm"
-                      style={{ resize: 'none' }}
+                      style={{ 
+                        resize: 'none',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        whiteSpace: 'nowrap'
+                      }}
+                      title={pattern || "输入正则表达式"}
                     />
                     {pattern && (
                       <div className="absolute right-2 top-1/2 transform -translate-y-1/2 text-xs text-muted-foreground font-mono">
