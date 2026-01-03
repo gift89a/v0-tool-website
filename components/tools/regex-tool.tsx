@@ -171,18 +171,18 @@ export function RegexTool() {
             <CardDescription>点击快速使用常用模式</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            <div className="grid grid-cols-1 gap-3">
               {commonPatterns.map((item) => (
                 <Button
                   key={item.name}
                   variant="outline"
                   size="sm"
                   onClick={() => setPattern(item.pattern)}
-                  className="justify-start text-left h-auto p-3"
+                  className="justify-start text-left h-auto p-3 min-h-[60px]"
                 >
-                  <div className="w-full">
-                    <div className="font-medium">{item.name}</div>
-                    <div className="text-xs text-muted-foreground font-mono break-all leading-tight">{item.pattern}</div>
+                  <div className="w-full min-w-0">
+                    <div className="font-medium text-sm mb-1">{item.name}</div>
+                    <div className="text-xs text-muted-foreground font-mono break-words leading-relaxed whitespace-pre-wrap">{item.pattern}</div>
                   </div>
                 </Button>
               ))}
