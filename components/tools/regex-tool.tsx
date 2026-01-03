@@ -107,13 +107,21 @@ export function RegexTool() {
               <div className="grid gap-4">
                 <div>
                   <Label htmlFor="pattern" className="text-sm font-mono">正则表达式</Label>
-                  <Input
-                    id="pattern"
-                    value={pattern}
-                    onChange={(e) => setPattern(e.target.value)}
-                    placeholder="例如: \\d+ 或 [a-zA-Z]+"
-                    className="font-mono mt-1"
-                  />
+                  <div className="relative mt-1">
+                    <Input
+                      id="pattern"
+                      value={pattern}
+                      onChange={(e) => setPattern(e.target.value)}
+                      placeholder="例如: \\d+ 或 [a-zA-Z]+"
+                      className="font-mono pr-12 text-sm"
+                      style={{ resize: 'none' }}
+                    />
+                    {pattern && (
+                      <div className="absolute right-2 top-1/2 transform -translate-y-1/2 text-xs text-muted-foreground font-mono">
+                        {pattern.length}
+                      </div>
+                    )}
+                  </div>
                 </div>
 
                 <div>
@@ -217,13 +225,21 @@ export function RegexTool() {
               <div className="grid gap-4">
                 <div>
                   <Label htmlFor="replace-pattern" className="text-sm font-mono">正则表达式</Label>
-                  <Input
-                    id="replace-pattern"
-                    value={pattern}
-                    onChange={(e) => setPattern(e.target.value)}
-                    placeholder="例如: \\d+ 或 [a-zA-Z]+"
-                    className="font-mono mt-1"
-                  />
+                  <div className="relative mt-1">
+                    <Input
+                      id="replace-pattern"
+                      value={pattern}
+                      onChange={(e) => setPattern(e.target.value)}
+                      placeholder="例如: \\d+ 或 [a-zA-Z]+"
+                      className="font-mono pr-12 text-sm"
+                      style={{ resize: 'none' }}
+                    />
+                    {pattern && (
+                      <div className="absolute right-2 top-1/2 transform -translate-y-1/2 text-xs text-muted-foreground font-mono">
+                        {pattern.length}
+                      </div>
+                    )}
+                  </div>
                 </div>
 
                 <div>
