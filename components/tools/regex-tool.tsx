@@ -6,9 +6,9 @@ import { Textarea } from "@/components/ui/textarea"
 import { Input } from "@/components/ui/input"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Label } from "@/components/ui/label"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { CheckCircle, XCircle, Info } from "lucide-react"
+import { CheckCircle, XCircle, Copy } from "lucide-react"
 
 export function RegexTool() {
   const [pattern, setPattern] = useState("")
@@ -18,6 +18,7 @@ export function RegexTool() {
   const [error, setError] = useState("")
   const [replaceText, setReplaceText] = useState("")
   const [result, setResult] = useState("")
+  const [copied, setCopied] = useState(false)
 
   const testRegex = () => {
     if (!pattern) {
@@ -63,6 +64,12 @@ export function RegexTool() {
     }
   }
 
+  const copyResult = () => {
+    navigator.clipboard.writeText(result)
+    setCopied(true)
+    setTimeout(() => setCopied(false), 2000)
+  }
+
   const commonPatterns = [
     { name: "邮箱", pattern: "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$" },
     { name: "手机号", pattern: "^1[3-9]\\d{9}$" },
@@ -75,263 +82,230 @@ export function RegexTool() {
   ]
 
   return (
-    <div className="space-y-6">
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* 输入区域 */}
-        <Card>
-          <CardHeader>
-            <CardTitle>正则表达式配置</CardTitle>
-            <CardDescription>输入正则表达式和测试文本</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div>
-              <Label htmlFor="pattern">正则表达式</Label>
-              <Input
-                id="pattern"
-                value={pattern}
-                onChange={(e) => setPattern(e.target.value)}
-                placeholder="例如: \\d+ 或 [a-zA-Z]+"
-                className="font-mono"
-              />
-            </div>
+    <div className="grid gap-6">
+      <Card className="border-primary/20">
+        <CardContent className="pt-6">
+          <Tabs defaultValue="match" className="w-full">
+            <TabsList className="grid w-full grid-cols-2 mb-6 bg-secondary/50">
+              <TabsTrigger
+                value="match"
+                className="gap-2 font-mono data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+              >
+                <CheckCircle className="w-4 h-4" />
+                匹配
+              </TabsTrigger>
+              <TabsTrigger
+                value="replace"
+                className="gap-2 font-mono data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+              >
+                <Copy className="w-4 h-4" />
+                替换
+              </TabsTrigger>
+            </TabsList>
 
-            <div>
-              <Label htmlFor="flags">标志</Label>
-              <div className="flex gap-2 mt-2">
-                <label className="flex items-center gap-2">
-                  <input
-                    type="checkbox"
-                    checked={flags.includes('g')}
-                    onChange={(e) => {
-                      if (e.target.checked) {
-                        setFlags(flags + 'g')
-                      } else {
-                        setFlags(flags.replace('g', ''))
-                      }
-                    }}
-                  />
-                  <span className="text-sm">g (全局)</span>
-                </label>
-                <label className="flex items-center gap-2">
-                  <input
-                    type="checkbox"
-                    checked={flags.includes('i')}
-                    onChange={(e) => {
-                      if (e.target.checked) {
-                        setFlags(flags + 'i')
-                      } else {
-                        setFlags(flags.replace('i', ''))
-                      }
-                    }}
-                  />
-                  <span className="text-sm">i (忽略大小写)</span>
-                </label>
-                <label className="flex items-center gap-2">
-                  <input
-                    type="checkbox"
-                    checked={flags.includes('m')}
-                    onChange={(e) => {
-                      if (e.target.checked) {
-                        setFlags(flags + 'm')
-                      } else {
-                        setFlags(flags.replace('m', ''))
-                      }
-                    }}
-                  />
-                  <span className="text-sm">m (多行)</span>
-                </label>
-              </div>
-            </div>
-
-            <div>
-              <Label htmlFor="testText">测试文本</Label>
-              <Textarea
-                id="testText"
-                value={testText}
-                onChange={(e) => setTestText(e.target.value)}
-                placeholder="输入要测试的文本..."
-                rows={6}
-                className="font-mono"
-              />
-            </div>
-
-            {error && (
-              <div className="flex items-center gap-2 p-3 bg-red-50 border border-red-200 rounded-md">
-                <XCircle className="w-4 h-4 text-red-500" />
-                <span className="text-sm text-red-700">{error}</span>
-              </div>
-            )}
-          </CardContent>
-        </Card>
-
-        {/* 常用模式 */}
-        <Card>
-          <CardHeader>
-            <CardTitle>常用正则模式</CardTitle>
-            <CardDescription>点击快速使用常用模式</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 gap-3">
-              {commonPatterns.map((item) => (
-                <Button
-                  key={item.name}
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setPattern(item.pattern)}
-                  className="justify-start text-left h-auto p-3 min-h-[60px]"
-                >
-                  <div className="w-full min-w-0">
-                    <div className="font-medium text-sm mb-1">{item.name}</div>
-                    <div className="text-xs text-muted-foreground font-mono break-words leading-relaxed whitespace-pre-wrap">{item.pattern}</div>
-                  </div>
-                </Button>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* 功能选项卡 */}
-      <Tabs defaultValue="match" className="w-full">
-        <TabsList className="grid w-full grid-cols-2">
-          <TabsTrigger value="match">匹配测试</TabsTrigger>
-          <TabsTrigger value="replace">替换测试</TabsTrigger>
-        </TabsList>
-
-        <TabsContent value="match" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                匹配结果
-                <Button onClick={testRegex} size="sm">
-                  开始匹配
-                </Button>
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              {matches.length > 0 ? (
-                <div className="space-y-3">
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <CheckCircle className="w-4 h-4 text-green-500" />
-                    找到 {matches.length} 个匹配项
-                  </div>
-                  <div className="space-y-2">
-                    {matches.map((match, index) => (
-                      <div key={index} className="p-3 bg-muted rounded-md">
-                        <div className="flex items-center gap-2 mb-2">
-                          <Badge variant="secondary">匹配 {index + 1}</Badge>
-                          <span className="text-sm text-muted-foreground">位置: {match.index}</span>
-                        </div>
-                        <div className="font-mono text-sm bg-background p-2 rounded border">
-                          {match.match}
-                        </div>
-                        {match.groups.length > 0 && (
-                          <div className="mt-2">
-                            <div className="text-xs text-muted-foreground mb-1">捕获组:</div>
-                            <div className="space-y-1">
-                              {match.groups.map((group, i) => (
-                                <div key={i} className="text-xs font-mono bg-blue-50 p-1 rounded">
-                                  ${i + 1}: {group || "(空)"}
-                                </div>
-                              ))}
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              ) : (
-                <div className="text-center py-8 text-muted-foreground">
-                  {pattern ? "没有找到匹配项" : "请输入正则表达式并点击开始匹配"}
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="replace" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>替换测试</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div>
-                <Label htmlFor="replaceText">替换文本</Label>
-                <Input
-                  id="replaceText"
-                  value={replaceText}
-                  onChange={(e) => setReplaceText(e.target.value)}
-                  placeholder="要替换成的文本，可以使用 $1, $2 等引用捕获组"
-                  className="font-mono"
-                />
-              </div>
-              <Button onClick={replaceRegex} className="w-full">
-                执行替换
-              </Button>
-              {result && (
+            <TabsContent value="match" className="space-y-4">
+              <div className="grid gap-4">
                 <div>
-                  <Label>替换结果</Label>
-                  <div className="mt-2 p-3 bg-muted rounded-md">
-                    <pre className="whitespace-pre-wrap font-mono text-sm">{result}</pre>
+                  <Label htmlFor="pattern" className="text-sm font-mono">正则表达式</Label>
+                  <Input
+                    id="pattern"
+                    value={pattern}
+                    onChange={(e) => setPattern(e.target.value)}
+                    placeholder="例如: \\d+ 或 [a-zA-Z]+"
+                    className="font-mono mt-1"
+                  />
+                </div>
+
+                <div>
+                  <Label className="text-sm font-mono">标志</Label>
+                  <div className="flex gap-4 mt-2">
+                    <label className="flex items-center gap-2">
+                      <input
+                        type="checkbox"
+                        checked={flags.includes('g')}
+                        onChange={(e) => {
+                          if (e.target.checked) {
+                            setFlags(flags + 'g')
+                          } else {
+                            setFlags(flags.replace('g', ''))
+                          }
+                        }}
+                      />
+                      <span className="text-sm font-mono">g</span>
+                    </label>
+                    <label className="flex items-center gap-2">
+                      <input
+                        type="checkbox"
+                        checked={flags.includes('i')}
+                        onChange={(e) => {
+                          if (e.target.checked) {
+                            setFlags(flags + 'i')
+                          } else {
+                            setFlags(flags.replace('i', ''))
+                          }
+                        }}
+                      />
+                      <span className="text-sm font-mono">i</span>
+                    </label>
+                    <label className="flex items-center gap-2">
+                      <input
+                        type="checkbox"
+                        checked={flags.includes('m')}
+                        onChange={(e) => {
+                          if (e.target.checked) {
+                            setFlags(flags + 'm')
+                          } else {
+                            setFlags(flags.replace('m', ''))
+                          }
+                        }}
+                      />
+                      <span className="text-sm font-mono">m</span>
+                    </label>
                   </div>
                 </div>
-              )}
-            </CardContent>
-          </Card>
-        </TabsContent>
-      </Tabs>
 
-      {/* 帮助信息 */}
-      <Card>
+                <div>
+                  <Label htmlFor="testText" className="text-sm font-mono">测试文本</Label>
+                  <Textarea
+                    id="testText"
+                    value={testText}
+                    onChange={(e) => setTestText(e.target.value)}
+                    placeholder="输入要测试的文本..."
+                    rows={4}
+                    className="font-mono mt-1"
+                  />
+                </div>
+
+                <div className="flex gap-2">
+                  <Button onClick={testRegex} className="flex-1 font-mono">
+                    开始匹配
+                  </Button>
+                </div>
+
+                {error && (
+                  <div className="flex items-center gap-2 p-3 bg-red-50 border border-red-200 rounded-md">
+                    <XCircle className="w-4 h-4 text-red-500" />
+                    <span className="text-sm text-red-700 font-mono">{error}</span>
+                  </div>
+                )}
+
+                {matches.length > 0 && (
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground font-mono">
+                      <CheckCircle className="w-4 h-4 text-green-500" />
+                      找到 {matches.length} 个匹配项
+                    </div>
+                    <div className="max-h-40 overflow-y-auto space-y-1">
+                      {matches.map((match, index) => (
+                        <div key={index} className="p-2 bg-muted rounded text-sm">
+                          <div className="flex items-center gap-2 mb-1">
+                            <Badge variant="secondary" className="text-xs">{index + 1}</Badge>
+                            <span className="text-xs text-muted-foreground font-mono">pos: {match.index}</span>
+                          </div>
+                          <div className="font-mono text-xs bg-background p-1 rounded border">
+                            {match.match}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </TabsContent>
+
+            <TabsContent value="replace" className="space-y-4">
+              <div className="grid gap-4">
+                <div>
+                  <Label htmlFor="replace-pattern" className="text-sm font-mono">正则表达式</Label>
+                  <Input
+                    id="replace-pattern"
+                    value={pattern}
+                    onChange={(e) => setPattern(e.target.value)}
+                    placeholder="例如: \\d+ 或 [a-zA-Z]+"
+                    className="font-mono mt-1"
+                  />
+                </div>
+
+                <div>
+                  <Label htmlFor="replaceText" className="text-sm font-mono">替换文本</Label>
+                  <Input
+                    id="replaceText"
+                    value={replaceText}
+                    onChange={(e) => setReplaceText(e.target.value)}
+                    placeholder="要替换成的文本，可以使用 $1, $2 等引用捕获组"
+                    className="font-mono mt-1"
+                  />
+                </div>
+
+                <div>
+                  <Label htmlFor="replace-testText" className="text-sm font-mono">测试文本</Label>
+                  <Textarea
+                    id="replace-testText"
+                    value={testText}
+                    onChange={(e) => setTestText(e.target.value)}
+                    placeholder="输入要测试的文本..."
+                    rows={4}
+                    className="font-mono mt-1"
+                  />
+                </div>
+
+                <div className="flex gap-2">
+                  <Button onClick={replaceRegex} className="flex-1 font-mono">
+                    执行替换
+                  </Button>
+                </div>
+
+                {result && (
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <Label className="text-sm font-mono">替换结果</Label>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={copyResult}
+                        className="text-xs font-mono"
+                      >
+                        {copied ? "已复制" : "复制"}
+                      </Button>
+                    </div>
+                    <div className="p-3 bg-muted rounded-md max-h-32 overflow-y-auto">
+                      <pre className="whitespace-pre-wrap font-mono text-sm">{result}</pre>
+                    </div>
+                  </div>
+                )}
+
+                {error && (
+                  <div className="flex items-center gap-2 p-3 bg-red-50 border border-red-200 rounded-md">
+                    <XCircle className="w-4 h-4 text-red-500" />
+                    <span className="text-sm text-red-700 font-mono">{error}</span>
+                  </div>
+                )}
+              </div>
+            </TabsContent>
+          </Tabs>
+        </CardContent>
+      </Card>
+
+      <Card className="border-border/50">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Info className="w-5 h-5" />
-            正则表达式参考
-          </CardTitle>
+          <CardTitle className="text-sm font-mono">常用模式</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-            <div>
-              <h4 className="font-medium mb-2">字符类</h4>
-              <ul className="space-y-1 font-mono text-xs">
-                <li>\d - 数字 [0-9]</li>
-                <li>\w - 字母数字 [a-zA-Z0-9_]</li>
-                <li>\s - 空白字符</li>
-                <li>. - 任意字符</li>
-                <li>[abc] - 字符集</li>
-                <li>[^abc] - 反向字符集</li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-medium mb-2">量词</h4>
-              <ul className="space-y-1 font-mono text-xs">
-                <li>* - 0次或多次</li>
-                <li>+ - 1次或多次</li>
-                <li>? - 0次或1次</li>
-                <li>{`{n}`} - 恰好n次</li>
-                <li>{`{n,m}`} - n到m次</li>
-                <li>{`{n,}`} - 至少n次</li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-medium mb-2">锚点</h4>
-              <ul className="space-y-1 font-mono text-xs">
-                <li>^ - 行开始</li>
-                <li>$ - 行结束</li>
-                <li>\b - 单词边界</li>
-                <li>\B - 非单词边界</li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-medium mb-2">分组</h4>
-              <ul className="space-y-1 font-mono text-xs">
-                <li>(abc) - 捕获组</li>
-                <li>(?:abc) - 非捕获组</li>
-                <li>a|b - 或条件</li>
-                <li>$1, $2 - 反向引用</li>
-              </ul>
-            </div>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+            {commonPatterns.map((item) => (
+              <Button
+                key={item.name}
+                variant="outline"
+                size="sm"
+                onClick={() => setPattern(item.pattern)}
+                className="justify-start text-left h-auto p-2 min-h-[50px]"
+              >
+                <div className="w-full min-w-0">
+                  <div className="font-medium text-xs mb-1 font-mono">{item.name}</div>
+                  <div className="text-xs text-muted-foreground font-mono break-words leading-tight">{item.pattern}</div>
+                </div>
+              </Button>
+            ))}
           </div>
         </CardContent>
       </Card>
