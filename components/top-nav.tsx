@@ -32,6 +32,7 @@ import {
   Code,
   GitBranch,
   Globe,
+  Minimize2,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useState } from "react"
@@ -196,6 +197,12 @@ const toolCategories = [
         title: "URL 解析器",
         icon: Globe,
         href: "/tools/url-parser",
+      },
+      {
+        id: "code-formatter",
+        title: "代码格式化",
+        icon: Code,
+        href: "/tools/code-formatter",
       },
     ],
   },
